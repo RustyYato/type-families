@@ -63,23 +63,23 @@ impl<A> Family<A> for TreeFamily {
 //     }
 // }
 
-impl<A, B, F> Traverse<A, B, F> for TreeFamily
-where
-    F: Applicative<This<Self, B>, This<Self, B>, This<Self, B>> + Functor<B, This<Self, B>>,
-{
-    fn traverse<G>(self, app: F, this: This<Self, A>, g: G) -> This<F, This<Self, B>>
-    where
-        G: Fn(A) -> This<F, B> + Copy,
-    {
-        match this {
-            Tree::Tip(a) => app.map(g(a), Tree::Tip),
-            Tree::Node(node) => {
-                let [l, r] = *node;
-                let l: This<F, This<Self, B>> = self.traverse(app, l, g);
-                let r: This<F, This<Self, B>> = self.traverse(app, r, g);
+// impl<A, B, F> Traverse<A, B, F> for TreeFamily
+// where
+//     F: Applicative<B, This<Self, B>, This<Self, B>>,
+// {
+//     fn traverse<G>(self, app: F, this: This<Self, A>, g: G) -> This<F, This<Self, B>>
+//     where
+//         G: Fn(A) -> This<F, B> + Copy,
+//     {
+//         match this {
+//             Tree::Tip(a) => app.map(g(a), Tree::Tip),
+//             Tree::Node(node) => {
+//                 let [l, r] = *node;
+//                 let l: This<F, This<Self, B>> = self.traverse(app, l, g);
+//                 let r: This<F, This<Self, B>> = self.traverse(app, r, g);
 
-                app.lift_a2(l, r, |l, r| Tree::Node(Box::new([l, r])))
-            }
-        }
-    }
-}
+//                 app.lift_a2(l, r, |l, r| Tree::Node(Box::new([l, r])))
+//             }
+//         }
+//     }
+// }

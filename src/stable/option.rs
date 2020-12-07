@@ -1,4 +1,4 @@
-use super::{Applicative, Family, Functor, Monad, This};
+use super::{Applicative, Family, Functor, Monad, Pure, This};
 use crate::OptionFamily;
 
 impl<A> Family<A> for OptionFamily {
@@ -7,6 +7,10 @@ impl<A> Family<A> for OptionFamily {
 
 impl<A, B> Functor<A, B> for OptionFamily {
     fn map<F: Fn(A) -> B>(self, this: This<Self, A>, f: F) -> This<Self, B> { this.map(f) }
+}
+
+impl<A> Pure<A> for OptionFamily {
+    fn pure(self, value: A) -> This<Self, A> { Some(value) }
 }
 
 impl<A, B, C> Applicative<A, B, C> for OptionFamily {
