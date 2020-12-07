@@ -2,6 +2,7 @@
 #![allow(incomplete_features)]
 
 pub mod tree;
+pub mod validity;
 
 mod gat;
 mod stable;

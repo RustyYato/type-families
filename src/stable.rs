@@ -1,5 +1,6 @@
 pub mod option;
 pub mod tree;
+pub mod validity;
 
 pub type This<T, A> = <T as Family<A>>::This;
 pub trait Family<A>: Copy {
