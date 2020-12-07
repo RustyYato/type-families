@@ -1,49 +1,5 @@
 use super::{Applicative, Family, Functor, Monad, Traverse};
-
-#[macro_export(local_inner_macros)]
-macro_rules! node {
-    (@first node { $($inner:tt)* }, $($rest:tt)*) => {
-        node!{
-            @second [tree!(node { $($inner)* })] $($rest)*
-        }
-    };
-    (@first tip = $value:expr, $($rest:tt)*) => {
-        node!{
-            @second [Tree::Tip($value)] $($rest)*
-        }
-    };
-    (@second [$first:expr] node { $($inner:tt)* } $(,)?) => {
-        Tree::Node(Box::new([
-            $first,
-            tree!(node { $($inner)* }),
-        ]))
-    };
-    (@second [$first:expr] tip = $value:expr $(,)?) => {
-        Tree::Node(Box::new([
-            $first,
-            Tree::Tip($value),
-        ]))
-    };
-}
-
-#[macro_export(local_inner_macros)]
-macro_rules! tree {
-    (node { $($inner:tt)* }) => {
-        node!(@first $($inner)*)
-    };
-    (tip = $value:expr) => {
-        Tree::Tip($value)
-    };
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum Tree<A> {
-    Tip(A),
-    Node(Box<[Tree<A>; 2]>),
-}
-
-#[derive(Clone, Copy)]
-pub struct TreeFamily;
+use crate::{Tree, TreeFamily};
 
 impl Family for TreeFamily {
     type This<A> = Tree<A>;

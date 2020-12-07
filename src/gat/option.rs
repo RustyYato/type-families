@@ -1,7 +1,5 @@
 use super::{Applicative, Family, Functor, Monad, Traverse};
-
-#[derive(Clone, Copy)]
-pub struct OptionFamily;
+use crate::OptionFamily;
 
 impl Family for OptionFamily {
     type This<A> = Option<A>;

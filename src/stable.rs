@@ -1,4 +1,5 @@
 pub mod option;
+pub mod tree;
 
 pub type This<T, A> = <T as Family<A>>::This;
 pub trait Family<A>: Copy {
@@ -28,6 +29,15 @@ pub trait Monad<A, B>: Functor<A, B> {
     {
         self.bind(f(a), g)
     }
+}
+
+pub trait Traverse<A, B, F>: Family<A> + Family<B>
+where
+    F: Applicative<This<Self, B>, This<Self, B>, This<Self, B>> + Functor<B, This<Self, B>>,
+{
+    fn traverse<G>(self, app: F, this: This<Self, A>, g: G) -> This<F, This<Self, B>>
+    where
+        G: Fn(A) -> This<F, B> + Copy;
 }
 
 pub trait SemiGroup {
