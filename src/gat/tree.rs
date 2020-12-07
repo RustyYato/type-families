@@ -45,23 +45,22 @@ impl Applicative for TreeFamily {
     }
 }
 
-// impl Monad for TreeFamily {
-//     fn bind<A, B, F>(self, a: Self::This<A>, f: F) -> Self::This<B>
-//     where
-//         F: Fn(A) -> Self::This<B>,
-//     {
-//         match a {
-//             Tree::Empty => Tree::Empty,
-//             Tree::Node(a) => {
-//                 let (r, v, l) = *a;
-//                 let r: Self::This<B> = self.bind(r, &f);
-//                 let v: Self::This<B> = f(v);
-//                 let l: Self::This<B> = self.bind(l, &f);
-//                 Tree::Empty
-//             }
-//         }
-//     }
-// }
+impl Monad for TreeFamily {
+    fn bind<A, B, F>(self, a: Self::This<A>, f: F) -> Self::This<B>
+    where
+        F: Fn(A) -> Self::This<B>,
+    {
+        match a {
+            Tree::Tip(value) => f(value),
+            Tree::Node(a) => {
+                let [l, r] = *a;
+                let l: Self::This<B> = self.bind(l, &f);
+                let r: Self::This<B> = self.bind(r, &f);
+                Tree::Node(Box::new([l, r]))
+            }
+        }
+    }
+}
 
 impl Traverse for TreeFamily {
     fn traverse<A, B, F: Applicative, G>(self, app: F, this: Self::This<A>, g: G) -> F::This<Self::This<B>>
