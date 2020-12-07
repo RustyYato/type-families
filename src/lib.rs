@@ -1,7 +1,7 @@
 #![feature(generic_associated_types)]
 #![allow(incomplete_features)]
 
-mod tree;
+pub mod tree;
 
 mod gat;
 mod stable;

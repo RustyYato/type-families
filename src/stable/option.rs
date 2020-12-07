@@ -13,8 +13,8 @@ impl<A> Pure<A> for OptionFamily {
     fn pure(self, value: A) -> This<Self, A> { Some(value) }
 }
 
-impl<A, B, C> Applicative<A, B, C> for OptionFamily {
-    fn lift_a2<F>(self, a: This<Self, A>, b: This<Self, B>, f: F) -> This<Self, C>
+impl<A, B> Applicative<A, B> for OptionFamily {
+    fn lift_a2<C, F>(self, a: This<Self, A>, b: This<Self, B>, f: F) -> This<Self, C>
     where
         F: Fn(A, B) -> C,
     {

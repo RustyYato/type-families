@@ -14,21 +14,22 @@ pub trait Pure<A>: Family<A> {
     fn pure(self, value: A) -> This<Self, A>;
 }
 
-pub trait Applicative<A, B, C>: Functor<A, B> + Pure<A> + Pure<B> + Pure<C> {
+pub trait Applicative<A, B>: Functor<A, B> + Pure<A> + Pure<B> {
     fn apply<F>(self, a: This<Self, F>, b: This<Self, A>) -> This<Self, B>
     where
         F: Fn(A) -> B,
-        Self: Applicative<F, A, B>,
+        Self: Applicative<F, A>,
     {
         self.lift_a2(a, b, move |q: F, r| q(r))
     }
 
-    fn lift_a2<F>(self, a: This<Self, A>, b: This<Self, B>, f: F) -> This<Self, C>
+    fn lift_a2<C, F>(self, a: This<Self, A>, b: This<Self, B>, f: F) -> This<Self, C>
     where
-        F: Fn(A, B) -> C;
+        F: Fn(A, B) -> C,
+        Self: Pure<C>;
 }
 
-pub trait Monad<A, B>: Functor<A, B> {
+pub trait Monad<A, B>: Applicative<A, B> {
     fn bind<F>(self, a: This<Self, A>, f: F) -> This<Self, B>
     where
         F: Fn(A) -> This<Self, B>;
@@ -58,7 +59,7 @@ impl<T: Family<A>, A> Family<A> for Iter<T> {
 
 impl<Fam: Family<A> + Family<B>, F, A, B> Traverse<A, B, F> for Iter<Fam>
 where
-    F: Applicative<B, This<Self, B>, This<Self, B>>,
+    F: Applicative<B, This<Self, B>>,
     This<Self, A>: IntoIterator<Item = A>,
     This<Self, B>: Extend<B> + Default,
 {

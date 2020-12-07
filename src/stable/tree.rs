@@ -23,8 +23,8 @@ impl<A> Pure<A> for TreeFamily {
     fn pure(self, value: A) -> This<Self, A> { Tree::Tip(value) }
 }
 
-impl<A, B, C> Applicative<A, B, C> for TreeFamily {
-    fn lift_a2<F>(self, a: This<Self, A>, b: This<Self, B>, f: F) -> This<Self, C>
+impl<A, B> Applicative<A, B> for TreeFamily {
+    fn lift_a2<C, F>(self, a: This<Self, A>, b: This<Self, B>, f: F) -> This<Self, C>
     where
         F: Fn(A, B) -> C,
     {
@@ -66,7 +66,7 @@ impl<A, B> Monad<A, B> for TreeFamily {
 
 impl<A, B, F> Traverse<A, B, F> for TreeFamily
 where
-    F: Applicative<This<Self, B>, This<Self, B>, This<Self, B>> + Functor<B, This<Self, B>>,
+    F: Applicative<This<Self, B>, This<Self, B>> + Functor<B, This<Self, B>>,
 {
     fn traverse<G>(self, app: F, this: This<Self, A>, g: G) -> This<F, This<Self, B>>
     where
