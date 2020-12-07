@@ -1,5 +1,5 @@
 use super::{Applicative, Family, Functor, Monad, Pure, This, Traverse};
-use crate::{Tree, TreeFamily};
+use crate::tree::{Tree, TreeFamily};
 
 impl<A> Family<A> for TreeFamily {
     type This = Tree<A>;
