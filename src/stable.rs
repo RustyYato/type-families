@@ -1,5 +1,3 @@
-use std::iter::FromIterator;
-
 pub mod option;
 pub mod tree;
 
@@ -45,10 +43,7 @@ pub trait Monad<A, B>: Functor<A, B> {
     }
 }
 
-pub trait Traverse<A, B, F>: Family<A> + Family<B>
-where
-    F: Applicative<B, This<Self, B>, This<Self, B>>,
-{
+pub trait Traverse<A, B, F: Family<B> + Family<This<Self, B>>>: Family<A> + Family<B> {
     fn traverse<G>(self, app: F, this: This<Self, A>, g: G) -> This<F, This<Self, B>>
     where
         G: Fn(A) -> This<F, B> + Copy;

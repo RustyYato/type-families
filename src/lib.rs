@@ -52,10 +52,10 @@ pub struct TreeFamily;
 #[derive(Clone, Copy)]
 pub struct OptionFamily;
 
-use stable::*;
-
 #[test]
 fn foo() {
+    use stable::*;
+
     let tr: Tree<u32> = tree! {
         node {
             node {
