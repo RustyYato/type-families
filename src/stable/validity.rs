@@ -11,10 +11,6 @@ impl<T, E> Family<T> for ValidityFamily<E> {
     type This = Validity<T, E>;
 }
 
-impl<T, E> Family<E> for ValidityFamilyInvalid<T> {
-    type This = Validity<T, E>;
-}
-
 impl<A, B, E> Functor<A, B> for ValidityFamily<E> {
     fn map<F: Fn(A) -> B>(self, this: This<Self, A>, f: F) -> This<Self, B> {
         match this {
