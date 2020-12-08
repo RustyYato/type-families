@@ -31,6 +31,52 @@ pub trait Applicative<A, B>: Functor<A, B> + Pure<A> + Pure<B> {
         Self: Pure<C>;
 }
 
+#[macro_export(local_inner_macros)]
+macro_rules! parse_do_notation {
+    (
+        $monad:expr =>
+    ) => {};
+    (
+        $monad:expr => pure $value:expr
+    ) => {
+        $crate::stable::Pure::pure($monad, $value)
+    };
+    (
+        $monad:expr => $value:expr; $($rest:tt)*
+    ) => {{
+        $value;
+        parse_do_notation!($monad => $($rest)*)
+    }};
+    (
+        $monad:expr => $value:stmt; $($rest:tt)*
+    ) => {{
+        $value
+        parse_do_notation!($monad => $($rest)*)
+    }};
+    (
+        $monad:expr =>
+        $pat:pat => $value:expr;
+        $($rest:tt)*
+    ) => {
+        $crate::stable::Monad::bind(
+            $monad,
+            $value,
+            move |$pat| parse_do_notation!($monad => $($rest)*)
+        )
+    };
+}
+
+#[macro_export(local_inner_macros)]
+macro_rules! do_notation {
+    (
+        $monad:expr => { $($expr:tt)* }
+    ) => {
+        parse_do_notation! {
+            $monad => $($expr)*
+        }
+    };
+}
+
 pub trait Monad<A, B>: Applicative<A, B> {
     fn bind<F>(self, a: This<Self, A>, f: F) -> This<Self, B>
     where
