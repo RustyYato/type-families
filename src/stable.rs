@@ -9,7 +9,7 @@ pub trait Family<A>: Copy {
 }
 
 pub trait Functor<A, B>: Family<A> + Family<B> {
-    fn map<F: Fn(A) -> B>(self, this: This<Self, A>, f: F) -> This<Self, B>;
+    fn map<F: Fn(A) -> B + Copy>(self, this: This<Self, A>, f: F) -> This<Self, B>;
 }
 
 pub trait Pure<A>: Family<A> {

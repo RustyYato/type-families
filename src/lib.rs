@@ -31,6 +31,24 @@ fn foo() {
         }
     };
 
+    TreeFamily.map(tr, |x| x + 1);
+
+    let tr: Tree<u32> = tree! {
+        node {
+            node {
+                tip = 1,
+                node {
+                    tip = 1,
+                    tip = 2,
+                }
+            },
+            node {
+                tip = 3,
+                tip = 4,
+            }
+        }
+    };
+
     let x: Option<Tree<u32>> = TreeFamily.traverse(OptionFamily, tr, |x| x.checked_sub(1));
 
     assert_eq!(

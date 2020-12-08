@@ -6,12 +6,12 @@ impl<A> Family<A> for TreeFamily {
 }
 
 impl<A, B> Functor<A, B> for TreeFamily {
-    fn map<F: Fn(A) -> B>(self, this: This<Self, A>, f: F) -> This<Self, B> {
+    fn map<F: Fn(A) -> B + Copy>(self, this: This<Self, A>, f: F) -> This<Self, B> {
         match this {
             Tree::Tip(value) => Tree::Tip(f(value)),
             Tree::Node(inner) => {
                 let [left, right] = *inner;
-                let left = self.map(left, &f);
+                let left = self.map(left, f);
                 let right = self.map(right, f);
                 Tree::Node(Box::new([left, right]))
             }
