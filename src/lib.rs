@@ -1,11 +1,14 @@
+#![forbid(unsafe_code)]
 #![feature(generic_associated_types)]
 #![allow(incomplete_features)]
 
 pub mod tree;
 pub mod validity;
 
-mod gat;
-mod stable;
+// mod gat;
+pub mod stable;
+
+pub mod trait_aliases;
 
 #[derive(Clone, Copy)]
 pub struct OptionFamily;
@@ -31,7 +34,7 @@ fn foo() {
         }
     };
 
-    TreeFamily.map(tr, |x| x + 1);
+    TreeFamily.map::<_, trait_aliases::Concrete>(tr, |x| x + 1);
 
     let tr: Tree<u32> = tree! {
         node {
@@ -49,7 +52,8 @@ fn foo() {
         }
     };
 
-    let x: Option<Tree<u32>> = TreeFamily.traverse(OptionFamily, tr, |x| x.checked_sub(1));
+    let x: Option<Tree<u32>> =
+        TreeFamily.traverse::<_, trait_aliases::Concrete>(OptionFamily, tr, |x: u32| x.checked_sub(1));
 
     assert_eq!(
         x,
